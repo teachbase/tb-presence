@@ -28,7 +28,8 @@ start_server(Module) ->
 init([]) ->
   Children = [
     ?CHILD(deliverly_http,worker),
-    ?CHILD(deliverly_server,worker)
+    ?CHILD(deliverly_server,worker),
+    ?CHILD(deliverly_nodes, worker)
   ],
   {ok, { {one_for_one, 5, 10}, Children} }.
 

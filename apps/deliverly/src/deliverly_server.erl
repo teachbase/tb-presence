@@ -58,6 +58,7 @@ auth_client(Client, Data) ->
 -spec handle_message(App::atom(), Data::any(), Context::any()) -> ok | {error, Reason::atom()}.
 
 handle_message(App, Data, Context) -> 
+  deliverly_nodes:broadcast_message(App, Data, Context),
   gen_server:call(?SERVER, {handle_message, App, Data, Context}).
 
 %% @doc
@@ -67,6 +68,7 @@ handle_message(App, Data, Context) ->
 -spec handle_client_message(Client::client(), Data::any()) -> ok | {ok, Response::any()} | {error, Reason::atom()}.
 
 handle_client_message(Client, Data) -> 
+  deliverly_nodes:broadcast_client_message(Client, Data),
   gen_server:call(?SERVER, {handle_client_message, Client, Data}).
 
 %% @doc
