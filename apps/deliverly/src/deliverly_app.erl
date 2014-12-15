@@ -16,7 +16,9 @@ start(_StartType, _StartArgs) ->
     undefined -> "deliverly.config";
     Else -> Else
   end,
+  ?D({config_path, ConfigPath}),
   ulitos_app:load_config(?APP, ConfigPath, ["etc"]),
+  ?D({config, application:get_all_env(?APP)}),
   deliverly_sup:start_link().
 
 stop(_State) ->

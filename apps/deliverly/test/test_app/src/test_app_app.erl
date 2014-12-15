@@ -10,6 +10,9 @@
 %% Deverly Handler callbacks.
 -export([authorize/2, handle_message/2, handle_client_message/2, client_disconnected/1]).
 
+%% Connection module functions
+-export([send/2, close/1]).
+
 %% ===================================================================
 %% Application callbacks
 %% ===================================================================
@@ -31,3 +34,7 @@ handle_message(_,_) -> ok.
 handle_client_message(_,_) -> ok.
 
 client_disconnected(_) -> ok.
+
+send(_,_) -> ok.
+
+close(_) -> ok.

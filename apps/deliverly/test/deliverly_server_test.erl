@@ -7,6 +7,7 @@
 
 setup_() ->
   lager:start(),
+  ulitos_app:set_var(?APP, default_app, true),
   deliverly:start(),
   test_app_app:start([],[]).
 
@@ -21,6 +22,7 @@ register_handler_test_() ->
       fun(_) ->
         {inorder,
           [
+            ensure_default_started_t_(),
             add_app_to_state_t_(),
             app_connections_list_t_()
           ]
@@ -28,6 +30,9 @@ register_handler_test_() ->
       end
     )
   }].
+
+ensure_default_started_t_() ->
+  ?_assert(lists:member(default, deliverly:apps_list())).
 
 add_app_to_state_t_() ->
   ?_assert(lists:member(test_app, deliverly:apps_list())).

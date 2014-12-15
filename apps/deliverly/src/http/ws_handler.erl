@@ -5,7 +5,7 @@
 
 -export([init/2, websocket_handle/3, websocket_info/3, websocket_terminate/3]).
 
--export([reply/2]).
+-export([send/2, close/1]).
 
 %% ------------------------------------------------------------------
 %% cowboy_websocket_handler Function Definitions
@@ -35,6 +35,9 @@ websocket_info({authorize, Data}, Req, Client) ->
 websocket_info({handle_message, Data}, Req, Client) ->
   {reply, encode(Data), Req, Client};
 
+websocket_info(handle_close, Req, Client) ->
+  {reply, close, Req, Client};
+
 websocket_info(_Info, Req, State) ->
   {ok, Req, State}.
 
@@ -51,10 +54,14 @@ websocket_terminate(_Reason, _Req, Client) ->
 %% Send message to WebSocket
 %% @end
 
--spec reply(Client::client(), Data::any()) -> ok.
+-spec send(Client::client(), Data::any()) -> ok.
 
-reply(#de_client{socket = Socket}, Data) ->
+send(#de_client{socket = Socket}, Data) ->
   Socket ! {handle_message, Data},
+  ok.
+
+close(#de_client{socket = Socket}) ->
+  Socket ! handle_close,
   ok.
 
 %% ------------------------------------------------------------------

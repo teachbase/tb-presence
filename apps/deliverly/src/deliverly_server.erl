@@ -84,6 +84,7 @@ client_disconnected(Client) ->
 
 init(_) ->
   ets:new(?APP, [public, named_table, {keypos, #de_client.socket}]),
+  self() ! post_init,  
   {ok, #state{started_at = ulitos:timestamp()}}.
 
 handle_call({register_handler, App, Handler}, _From, #state{apps = Apps}=State) ->
@@ -152,6 +153,15 @@ handle_call(_Request, _From, State) ->
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
+
+handle_info(post_init, State) ->
+  case ?Config(default_app, false) of
+    true -> 
+      ?D(<<"Default app is enabled">>),
+      deliverly_sup:start_server(default_app);
+    _ -> pass
+  end,
+  {noreply, State};
 
 handle_info(_Info, State) ->
   {noreply, State}.
