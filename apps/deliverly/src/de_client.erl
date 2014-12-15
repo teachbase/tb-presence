@@ -68,8 +68,8 @@ broadcast_to(Clients, Data, Fun) when is_function(Fun,1) ->
       clients_to_list(Clients));
 
 
-broadcast_to(Clients, Data, {except, Clients}) ->
-  Fun = except_fun(Clients),
+broadcast_to(Clients, Data, {except, ClientsFilter}) ->
+  Fun = except_fun(ClientsFilter),
   broadcast_to(Clients, Data, Fun);
 
 broadcast_to(_,_,_Filter) ->

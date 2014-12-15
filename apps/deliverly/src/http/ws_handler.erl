@@ -3,7 +3,7 @@
 -include_lib("deliverly/include/log.hrl").
 -behaviour(cowboy_websocket).
 
--export([init/2, websocket_handle/3, websocket_info/3, websocket_terminate/3]).
+-export([init/2, websocket_handle/3, websocket_info/3, terminate/3]).
 
 -export([send/2, close/1]).
 
@@ -19,16 +19,16 @@ init(Req, _Opts) ->
   {cowboy_websocket, Req, Client}.
 
 websocket_handle(Data, Req, Client) ->
-  case deliverly_server:handle_client_message(Client,Data) of
+  case deliverly_server:handle_client_message(Client,decode(Data)) of
     ok -> {ok, Req, Client};
-    {ok, Data} -> {reply, decode(Data), Req, Client};
+    {ok, Response} -> {reply, encode(Response), Req, Client};
     _ -> {reply, close, Req, Client}
   end.
 
 websocket_info({authorize, Data}, Req, Client) ->
   case deliverly_server:auth_client(Client, Data) of
     ok -> {ok, Req, Client};
-    {ok, Data} -> {reply, encode(Data), Req, Client};
+    {ok, Response} -> {reply, encode(Response), Req, Client};
     _ -> {reply, close, Req, Client}
   end;
 
@@ -41,7 +41,8 @@ websocket_info(handle_close, Req, Client) ->
 websocket_info(_Info, Req, State) ->
   {ok, Req, State}.
 
-websocket_terminate(_Reason, _Req, Client) ->
+terminate(_Reason, _Req, Client) ->
+  ?D({websocket_disconnected, Client}),
   deliverly_server:client_disconnected(Client),
   ok.
 

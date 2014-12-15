@@ -47,13 +47,15 @@ handle_call({authorize, Client}, From, #state{clear_timer = Timer}=State) ->
 handle_call({client_disconnected, #de_client{socket = Socket}}, _, #state{clients=Clients} = State) ->
   NewClients = maps:remove(Socket, Clients),
   Timer = case maps:size(NewClients) of
-    0 -> erlang:start_timer(?CLEAR_TIMEOUT, self(), clear_history);
+    0 -> 
+      ?D({no_more_clients}),
+      erlang:send_after(?CLEAR_TIMEOUT, self(), clear_history);
     _ -> undefined
   end,
   {reply, ok, State#state{clients = NewClients, clear_timer = Timer}};
 
 handle_call({handle_client_message, Client, Message}, _, #state{clients = Clients, messages = Messages}=State) ->
-  de_client:broadcast_to(Clients, Message, {except, Client}),
+  de_client:broadcast_to(Clients, Message),
   {reply, ok, State#state{messages = lists:append(Messages,[Message])}};
 
 handle_call(_Request, _From, State) ->
@@ -67,6 +69,7 @@ handle_info(register, State) ->
   {noreply, State};
 
 handle_info(clear_history, _State) ->
+  ?D({clear_history}),
   {noreply, #state{}};
 
 handle_info(_Info, State) ->

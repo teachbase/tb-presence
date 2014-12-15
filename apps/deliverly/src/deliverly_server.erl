@@ -134,6 +134,7 @@ handle_call({handle_client_message, #de_client{app = App} = Client, Data}, _From
   end;
 
 handle_call({client_disconnected, #de_client{app = App} = Client}, _From, #state{apps = Apps} = State) ->
+  ?ACCESS("DISCONNECT ~p ~p",[App,Client#de_client.path]),
   case find_handler(App, Apps) of
     false ->
       ?E({app_not_exist, App}),

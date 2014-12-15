@@ -43,6 +43,7 @@ add_routes(Routes) ->
 
 init([]) ->
   Port = ?Config(http_port, 8081),
+  ?D({<<"Start HTTP on port">>, Port}),
   self() ! start,
   {ok, #state{port = Port}}.
 
