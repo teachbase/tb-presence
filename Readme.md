@@ -1,4 +1,4 @@
-DelivErly
+DelivErly Node
 =====
 
-Erlang super-project.
+Erlang node configuration for DelivErly.
