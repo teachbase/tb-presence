@@ -1,0 +1,3 @@
+[submodule "apps/deliverly"]
+	path = apps/deliverly
+	url = https://github.com/deliverly/deliverly-core.git
