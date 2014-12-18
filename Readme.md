@@ -1,4 +1,5 @@
-DelivErly Node
-=====
+Teachbase Presence
+=======
 
-Erlang node configuration for DelivErly.
+DelivErly application
+
