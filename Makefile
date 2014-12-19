@@ -15,7 +15,7 @@ all: compile
 update:
 	git pull
 
-deps:
+dep:
 	@$(REBAR) get-deps
 
 update_deps:
@@ -43,10 +43,10 @@ shell:
 	ERL_LIBS=apps:deps erl -args_file files/vm.args -sasl errlog_type error -boot start_sasl -config files/app.config
 
 run:
-	ERL_LIBS=apps:deps erl -args_file files/vm.args -sasl errlog_type error -boot  start_sasl -sname de1@localhost -s $(APPNAME) -embedded -config files/app.config
+	ERL_LIBS=apps:deps erl -args_file files/vm.args -sasl errlog_type error -boot  start_sasl -sname de1@localhost -s $(APPNAME) -s tb_perf -embedded -config files/app.config
 
 run2:
-	ERL_LIBS=apps:deps erl -args_file files/vm.args -sasl errlog_type error -boot  start_sasl -sname de2@localhost -s $(APPNAME) -deliverly config \"del2.config\" -embedded -config files/app.config
+	ERL_LIBS=apps:deps erl -args_file files/vm.args -sasl errlog_type error -boot  start_sasl -sname de2@localhost -s $(APPNAME) -s tb_perf -deliverly config \"del2.config\" -embedded -config files/app.config
 
 
 

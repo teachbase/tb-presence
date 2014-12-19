@@ -1,0 +1,14 @@
+{application, tb_perf,
+ [
+  {description, ""},
+  {vsn, git},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  deliverly,
+                  influx_udp
+                 ]},
+  {mod, { tb_perf_app, []}},
+  {env, []}
+ ]}.

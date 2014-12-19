@@ -1,5 +1,4 @@
-Teachbase Presence
-=======
+tb-presence
+===========
 
-DelivErly application
-
+DelivErly application for Teachbase
