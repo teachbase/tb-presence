@@ -27,7 +27,7 @@ ets_owner() ->
 
 init_per_suite(Config) ->
   Pid = spawn(fun ets_owner/0),
-  TabId = ets:new(?ETS, [public, {heir, Pid, []}, {keypos, #point.ts}]),
+  TabId = ets:new(?ETS, [public, ordered_set, {heir, Pid, []}, {keypos, #point.ts}]),
   lager:start(),
   ulitos_app:set_var(deliverly, http_port, 8888),  
   ulitos_app:set_var(?APP, visits_series, visits),
@@ -79,7 +79,7 @@ groups() ->
       ]
     },
     {
-      client_disconnected_with_messages, [sequence],
+      client_disconnected_with_messages, [sequence, {repeat, 10}],
       [
         add_client,
         client_send_message,
@@ -118,10 +118,14 @@ client_send_message(Config) ->
   0 = length(ets:tab2list(?config(table, Config))),
   deliverly_server:handle_client_message(Client, #{<<"time_spent">> => 100, <<"id">> => 1}),
   timer:sleep(200),
-  [Msg] = ets:tab2list(?config(table, Config)),
+  1 = length(ets:tab2list(?config(table, Config))),
+  deliverly_server:handle_client_message(Client, #{<<"time_spent">> => 200, <<"id">> => 2}),
+  timer:sleep(200),
+  Key = ets:last(?config(table, Config)),
+  [Msg] = ets:lookup(?config(table, Config), Key),
   visits = Msg#point.series,
-  #{<<"time_spent">> := 100} = Msg#point.data,
-  #{<<"id">> := 1} = Msg#point.data,
+  #{<<"time_spent">> := 200} = Msg#point.data,
+  #{<<"id">> := 2} = Msg#point.data,
   ok.
 
 
@@ -129,11 +133,15 @@ client_disconnected_2(Config) ->
   [Client] = deliverly:connections_list(?APP),
   timer:sleep(500),
   %% ensure that one message have already been there 
-  1 = length(ets:tab2list(?config(table, Config))),
+  2 = length(ets:tab2list(?config(table, Config))),
   deliverly_server:client_disconnected(Client),
-  timer:sleep(500),
-  [_, Msg] = ets:tab2list(?config(table, Config)),
+  timer:sleep(200),
+  3 = length(ets:tab2list(?config(table, Config))),
+  
+  Key = ets:last(?config(table, Config)),
+  [Msg] = ets:lookup(?config(table, Config), Key),
   undefined = erlang:process_info(Client#de_client.data),
-  1 = maps:get(<<"id">>, Msg#point.data),
+  2 = maps:get(<<"id">>, Msg#point.data),
   true = (maps:get(<<"time_spent">>, Msg#point.data, 0) > 500),   
+  true = (maps:get(<<"time_spent">>, Msg#point.data, 0) < 1000),   
   ok.
