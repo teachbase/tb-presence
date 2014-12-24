@@ -1,0 +1,14 @@
+{application, tb_visits,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  deliverly,
+                  influx_udp
+                 ]},
+  {mod, { tb_visits_app, []}},
+  {env, []}
+ ]}.

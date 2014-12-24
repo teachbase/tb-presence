@@ -31,7 +31,10 @@ soft-release:
 	@$(REBAR) generate force=1
 
 test:
-	@$(REBAR) skip_deps=true eunit apps=deliverly
+	@$(REBAR) skip_deps=true eunit
+
+ct:
+	@$(REBAR) skip_deps=true ct
 
 clean:
 	@$(REBAR) clean

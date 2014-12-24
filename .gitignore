@@ -23,6 +23,7 @@
 out
 # erlang binaries and release
 
+logs/
 deps
 /deliverly
 ebin/
