@@ -15,6 +15,7 @@
 
 -record(state, {
   series ::atom(),
+  active = false ::boolean(),
   last_ts =0 ::non_neg_integer(),
   msg = undefined ::any()
 }).
@@ -23,7 +24,6 @@ start_link(Client) ->
   gen_server:start_link(?MODULE, [Client], []).
 
 init([_Client]) ->
-  ?D({start_visit, _Client}),
   {ok, #state{series=?Config(visits_series, visits)}}.
 
 handle_call(_Request, _From, State) ->
@@ -32,6 +32,9 @@ handle_call(_Request, _From, State) ->
 handle_cast({handle_message, Message}, #state{msg=undefined}=State) ->
   {noreply, State#state{msg=Message, last_ts=ulitos:timestamp()}};
 
+handle_cast({handle_message, #{<<"active">> := Active} = Message}, #state{active=ActiveWas}=State) when Active /= ActiveWas ->
+  handle_cast({handle_message, Message}, State#state{active = Active});
+
 handle_cast({handle_message, Message}, #state{series=Series}=State) ->
   write_message(Series, Message),
   {noreply, State#state{msg=Message, last_ts=ulitos:timestamp()}};
@@ -39,7 +42,10 @@ handle_cast({handle_message, Message}, #state{series=Series}=State) ->
 handle_cast(disconnected, #state{msg=undefined}=State) ->
   {stop, normal, State};
 
-handle_cast(disconnected, #state{series=Series, msg=Msg, last_ts=Time}=State) ->
+handle_cast(disconnected, #state{active=false}=State) ->
+  {stop, normal, State};
+
+handle_cast(disconnected, #state{series=Series, msg=Msg, last_ts=Time, active=true}=State) ->
   TimeSpent = ulitos:timestamp() - Time,
   NewMsg = maps:update(<<"time_spent">>, TimeSpent, Msg),
   write_message(Series, NewMsg),

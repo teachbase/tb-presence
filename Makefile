@@ -30,7 +30,9 @@ release: clean compile
 soft-release:
 	@$(REBAR) generate force=1
 
-test:
+test: eunit ct
+
+eunit:
 	@$(REBAR) skip_deps=true eunit
 
 ct:

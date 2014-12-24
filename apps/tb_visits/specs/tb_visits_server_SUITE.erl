@@ -9,6 +9,8 @@
 -define(Client(Id), #de_client{app=?APP, module=tb_visits_server, socket=list_to_pid("<0.0."++Id++">")}).
 -define(Pid(Id), list_to_pid(Id)).
 
+-define(Msg(Id,Time,Active), json_encoder:decode({text, list_to_binary(io_lib:format("{\"id\":~p,\"time_spent\":~p,\"active\":~p}",[Id,Time,Active]))})).
+
 -define(ETS, test_tb_visits_ets).
 
 -define(config(K,P), proplists:get_value(K,P)).
@@ -65,7 +67,8 @@ all() ->
   [
     {group, simple},
     {group, client_disconnected_without_messages},
-    {group, client_disconnected_with_messages}
+    {group, client_disconnected_with_messages},
+    {group, client_disconnected_inactive}
   ].
 
 groups() ->
@@ -79,11 +82,19 @@ groups() ->
       ]
     },
     {
-      client_disconnected_with_messages, [sequence, {repeat, 10}],
+      client_disconnected_with_messages, [sequence],
       [
         add_client,
         client_send_message,
         client_disconnected_2
+      ]
+    },
+    {
+      client_disconnected_inactive, [sequence],
+      [
+        add_client,
+        client_send_message,
+        client_inactive_disconnected
       ]
     }
   ].
@@ -112,14 +123,14 @@ client_disconnected(Config) ->
 
 client_send_message(Config) ->
   [Client] = deliverly:connections_list(?APP),
-  deliverly_server:handle_client_message(Client, #{<<"time_spent">> => 0, <<"id">> => 1}),
+  deliverly_server:handle_client_message(Client, ?Msg(1,0,true)),
   timer:sleep(200),
   %% first message is not writable, so
   0 = length(ets:tab2list(?config(table, Config))),
-  deliverly_server:handle_client_message(Client, #{<<"time_spent">> => 100, <<"id">> => 1}),
+  deliverly_server:handle_client_message(Client, ?Msg(1,100,true)),
   timer:sleep(200),
   1 = length(ets:tab2list(?config(table, Config))),
-  deliverly_server:handle_client_message(Client, #{<<"time_spent">> => 200, <<"id">> => 2}),
+  deliverly_server:handle_client_message(Client, ?Msg(2,200,true)),
   timer:sleep(200),
   Key = ets:last(?config(table, Config)),
   [Msg] = ets:lookup(?config(table, Config), Key),
@@ -128,6 +139,17 @@ client_send_message(Config) ->
   #{<<"id">> := 2} = Msg#point.data,
   ok.
 
+
+client_inactive_disconnected(Config) ->
+  [Client] = deliverly:connections_list(?APP),
+  deliverly_server:handle_client_message(Client, ?Msg(2,100,false)),
+  timer:sleep(200),
+  3 = length(ets:tab2list(?config(table, Config))),
+  timer:sleep(500),
+  deliverly_server:client_disconnected(Client),
+  timer:sleep(200),
+  3 = length(ets:tab2list(?config(table, Config))),
+  ok.
 
 client_disconnected_2(Config) ->
   [Client] = deliverly:connections_list(?APP),
