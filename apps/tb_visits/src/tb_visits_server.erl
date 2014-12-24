@@ -30,6 +30,8 @@ authorize(Client,_) -> gen_server:call(?SERVER, {authorize, Client}).
 
 handle_message(_,_) -> ok.
 
+handle_client_message(_, #{}) -> ok;
+
 handle_client_message(Client, Message) -> gen_server:call(?SERVER, {handle_client_message, Client, Message}).
 
 client_disconnected(#de_client{data=Pid}) -> gen_server:cast(Pid, disconnected).

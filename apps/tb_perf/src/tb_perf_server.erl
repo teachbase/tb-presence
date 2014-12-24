@@ -30,7 +30,9 @@ authorize(Client,_) -> {ok, Client}.
 
 handle_message(_,_) -> ok.
 
-handle_client_message(_Client, {text, Message}) -> gen_server:call(?SERVER, {handle_client_message, Message}).
+handle_client_message(_Client, {text, Message}) -> gen_server:call(?SERVER, {handle_client_message, Message});
+
+handle_client_message(_, _) -> ok.
 
 client_disconnected(_) -> ok.
 
