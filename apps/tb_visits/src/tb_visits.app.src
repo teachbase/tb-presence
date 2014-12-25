@@ -1,7 +1,7 @@
 {application, tb_visits,
  [
   {description, ""},
-  {vsn, "1"},
+  {vsn, git},
   {registered, []},
   {applications, [
                   kernel,
