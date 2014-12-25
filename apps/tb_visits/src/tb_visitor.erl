@@ -71,4 +71,5 @@ code_change(_OldVsn, State, _Extra) ->
 %%% internal
 
 write_message(Series, Msg) ->
+  ?I({msg, Msg}),
   influx_udp:write(Series, Msg).

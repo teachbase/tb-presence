@@ -101,6 +101,8 @@ groups() ->
 
 
 reg_app(_) ->
+  %% send message to activate app
+  ok = deliverly_server:handle_message(tb_visits, [], []),
   List = deliverly:apps_list(),
   true = lists:member(tb_visits, List),
   ok.
@@ -115,7 +117,7 @@ add_client(_) ->
 
 client_disconnected(Config) ->
   [Client] = deliverly:connections_list(?APP),
-  deliverly_server:client_disconnected(Client),
+  ok = deliverly_server:client_disconnected(Client),
   timer:sleep(200),
   undefined = erlang:process_info(Client#de_client.data),
   0 = length(ets:tab2list(?config(table, Config))),
@@ -123,14 +125,14 @@ client_disconnected(Config) ->
 
 client_send_message(Config) ->
   [Client] = deliverly:connections_list(?APP),
-  deliverly_server:handle_client_message(Client, ?Msg(1,0,true)),
+  ok = deliverly_server:handle_client_message(Client, ?Msg(1,0,true)),
   timer:sleep(200),
   %% first message is not writable, so
   0 = length(ets:tab2list(?config(table, Config))),
-  deliverly_server:handle_client_message(Client, ?Msg(1,100,true)),
+  ok = deliverly_server:handle_client_message(Client, ?Msg(1,100,true)),
   timer:sleep(200),
   1 = length(ets:tab2list(?config(table, Config))),
-  deliverly_server:handle_client_message(Client, ?Msg(2,200,true)),
+  ok = deliverly_server:handle_client_message(Client, ?Msg(2,200,true)),
   timer:sleep(200),
   Key = ets:last(?config(table, Config)),
   [Msg] = ets:lookup(?config(table, Config), Key),
@@ -142,11 +144,11 @@ client_send_message(Config) ->
 
 client_inactive_disconnected(Config) ->
   [Client] = deliverly:connections_list(?APP),
-  deliverly_server:handle_client_message(Client, ?Msg(2,100,false)),
+  ok = deliverly_server:handle_client_message(Client, ?Msg(2,100,false)),
   timer:sleep(200),
   3 = length(ets:tab2list(?config(table, Config))),
   timer:sleep(500),
-  deliverly_server:client_disconnected(Client),
+  ok = deliverly_server:client_disconnected(Client),
   timer:sleep(200),
   3 = length(ets:tab2list(?config(table, Config))),
   ok.
@@ -156,7 +158,7 @@ client_disconnected_2(Config) ->
   timer:sleep(500),
   %% ensure that one message have already been there 
   2 = length(ets:tab2list(?config(table, Config))),
-  deliverly_server:client_disconnected(Client),
+  ok = deliverly_server:client_disconnected(Client),
   timer:sleep(200),
   3 = length(ets:tab2list(?config(table, Config))),
   

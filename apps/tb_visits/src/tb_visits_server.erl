@@ -23,14 +23,11 @@ start_link() ->
 
 init([]) ->
   ?D(<<"Staring application: tb_visits">>),
-  self() ! register,
   {ok, #state{started_at = ulitos:timestamp()}}.
 
 authorize(Client,_) -> gen_server:call(?SERVER, {authorize, Client}).
 
 handle_message(_,_) -> ok.
-
-handle_client_message(_, #{}) -> ok;
 
 handle_client_message(Client, Message) -> gen_server:call(?SERVER, {handle_client_message, Client, Message}).
 
@@ -50,10 +47,6 @@ handle_call(_Request, _From, State) ->
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
-
-handle_info(register, State) ->
-  ok = deliverly:register_handler(tb_visits, tb_visits_server),
-  {noreply, State};
 
 handle_info(_Info, State) ->
   ?D({unknown, _Info}),

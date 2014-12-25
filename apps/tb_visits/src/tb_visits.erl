@@ -11,6 +11,7 @@
 %% ------------------------------------------------------------------
 
 -export([start/0, stop/0, upgrade/0]).
+-export([deliverly_handler/0]).
 
 start() ->
   ulitos_app:ensure_started(?APPS),
@@ -22,3 +23,5 @@ stop() ->
 upgrade() ->
  ulitos_app:reload(?APP),
  ok.
+
+deliverly_handler() -> tb_visits_server.
