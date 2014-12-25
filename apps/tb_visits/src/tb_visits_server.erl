@@ -35,7 +35,6 @@ client_disconnected(#de_client{data=Pid}) -> gen_server:cast(Pid, disconnected).
 
 handle_call({authorize, Client}, _, State) ->
   {ok, Pid} = tb_visits_sup:start_visitor(Client),
-  erlang:monitor(process,Pid),
   {reply, {ok, Client#de_client{encoder=json_encoder, data=Pid}}, State};
 
 handle_call({handle_client_message, #de_client{data=Pid}, Data}, _, State) ->

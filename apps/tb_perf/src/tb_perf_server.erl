@@ -22,8 +22,7 @@ start_link() ->
   gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
 init([]) ->
-  ?D(<<"Staring application: tb_perf">>),
-  self() ! register,
+  ?D(<<"Starting application: tb_perf">>),
   {ok, #state{started_at = ulitos:timestamp()}}.
 
 authorize(Client,_) -> {ok, Client}.
@@ -45,10 +44,6 @@ handle_call(_Request, _From, State) ->
 
 handle_cast(_Msg, State) ->
   {noreply, State}.
-
-handle_info(register, State) ->
-  ok = deliverly:register_handler(tb_perf, tb_perf_server),
-  {noreply, State};
 
 handle_info(_Info, State) ->
   {noreply, State}.
