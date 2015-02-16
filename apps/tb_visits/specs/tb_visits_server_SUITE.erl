@@ -9,7 +9,7 @@
 -define(Client(Id), #de_client{app=?APP, module=tb_visits_server, socket=list_to_pid("<0.0."++Id++">")}).
 -define(Pid(Id), list_to_pid(Id)).
 
--define(Msg(Id,Time,Active), json_encoder:decode({text, list_to_binary(io_lib:format("{\"id\":~p,\"time_spent\":~p,\"active\":~p}",[Id,Time,Active]))})).
+-define(Msg(Id,Time,Active), json_encoder:decode(#de_client{}, {text, list_to_binary(io_lib:format("{\"id\":~p,\"time_spent\":~p,\"active\":~p}",[Id,Time,Active]))})).
 
 -define(ETS, test_tb_visits_ets).
 
