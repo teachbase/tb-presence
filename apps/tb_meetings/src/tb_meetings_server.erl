@@ -37,7 +37,7 @@ authorize(Client, Data) ->
       end
   end.
 
-handle_message(Data, #{id := Id, type := chat}) ->
+handle_message(Data, #{id := Id}) ->
   gen_server:call(?SERVER, {handle_message, Id, Data});
 
 handle_message(_, _) -> ok.
@@ -53,9 +53,8 @@ init(_Args) ->
   {ok, #state{}}.
 
 handle_call({authorize, Id, #de_client{} = Client}, _From, #state{clients = Clients} = State) ->
-  NewClient = Client#de_client{data = #{id => Id}},
+  NewClient = Client#de_client{encoder = json_encoder, data = #{id => Id}},
   NewClients = add_client(NewClient, Id, Clients),
-  ?D(NewClient),
   {reply, {ok, NewClient}, State#state{clients = NewClients}};
 
 handle_call({client_disconnected, Client}, _From, #state{clients = Clients} = State) ->
