@@ -1,0 +1,13 @@
+{application, tb_meetings,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  deliverly
+                 ]},
+  {mod, { tb_meetings_app, []}},
+  {env, []}
+ ]}.
