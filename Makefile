@@ -15,7 +15,7 @@ all: compile
 update:
 	git pull
 
-dep:
+get_deps:
 	@$(REBAR) get-deps
 
 update_deps:
