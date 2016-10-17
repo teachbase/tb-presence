@@ -24,13 +24,13 @@ out
 # erlang binaries and release
 
 logs/
-deps
 /deliverly
 ebin/
 *.beam
 .eunit
 .rebar
 *.dump
+_build
 
 # other files
 files/app.config

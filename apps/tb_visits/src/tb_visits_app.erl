@@ -10,6 +10,7 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
+  deliverly:register_handler(tb_visits, tb_visits_server),
   tb_visits_sup:start_link().
 
 stop(_State) ->

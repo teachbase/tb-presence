@@ -5,6 +5,22 @@
 -include_lib("tb_visits/include/priv.hrl").
 -define(SERVER, ?MODULE).
 
+-define(TAGS, [
+  <<"quiz_id">>, 
+  <<"course_session_id">>, 
+  <<"course_id">>,
+  <<"account_id">>,
+  <<"material_id">>, 
+  <<"meeting_id">>
+]).
+
+-define(VALUES, [
+  <<"question_id">>, 
+  <<"document_id">>, 
+  <<"time_spent">>, 
+  <<"user_id">>
+]).
+
 %% API Function Exports
 -export([start_link/1]).
 %% gen_server Function Exports
@@ -70,5 +86,22 @@ code_change(_OldVsn, State, _Extra) ->
 
 %%% internal
 
-write_message(Series, Msg) ->
-  influx_udp:write(Series, Msg).
+write_message(Measurement, Msg) ->
+  M = prepare_msg(Measurement, Msg),
+  ?D(M),
+  influx_udp:write(M).
+
+prepare_msg(Measurement, Msg) ->
+  NewMsg = #{measurement => Measurement},
+  AddKey = 
+    fun(Key, Map) ->
+      NewMap = 
+        case maps:is_key(Key, Msg) of
+          true -> Map#{Key => maps:get(Key, Msg)};
+          _ -> Map
+        end,
+      NewMap
+    end,
+  Tags = lists:foldl(AddKey, #{}, ?TAGS),
+  Values = lists:foldl(AddKey, #{}, ?VALUES),
+  NewMsg#{tags => Tags, fields => Values}.
