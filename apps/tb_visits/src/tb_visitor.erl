@@ -17,7 +17,9 @@
 -define(VALUES, [
   <<"question_id">>, 
   <<"document_id">>, 
-  <<"time_spent">>, 
+  <<"time_spent">>,
+  <<"field_user_id">>,
+  <<"field_account_id">>,
   <<"user_id">>
 ]).
 
