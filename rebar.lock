@@ -15,16 +15,12 @@
  {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.8">>},1},
  {<<"influx_udp">>,
   {git,"https://github.com/silkbottle/influx_udp.git",
-       {ref,"df542b1f9b2770441895b9a3497fc4c53f96733f"}},
+       {ref,"ee625de5721b6da91b0525132a5c6182f02b2957"}},
   0},
  {<<"jsx">>,{pkg,<<"jsx">>,<<"2.8.0">>},0},
  {<<"lager">>,{pkg,<<"lager">>,<<"3.2.1">>},0},
  {<<"poolboy">>,{pkg,<<"poolboy">>,<<"1.5.1">>},0},
  {<<"ranch">>,{pkg,<<"ranch">>,<<"1.2.1">>},0},
- {<<"sync">>,
-  {git,"https://github.com/rustyio/sync.git",
-       {ref,"ce670127d03b952cc0e06aeaef5ee2deea983a29"}},
-  0},
  {<<"ulitos">>,{pkg,<<"ulitos">>,<<"0.3.0">>},0}]}.
 [
 {pkg_hash,[
