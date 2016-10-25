@@ -14,7 +14,7 @@
   1},
  {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.8">>},1},
  {<<"influx_udp">>,
-  {git,"https://github.com/palkan/influx_udp.git",
+  {git,"https://github.com/silkbottle/influx_udp.git",
        {ref,"df542b1f9b2770441895b9a3497fc4c53f96733f"}},
   0},
  {<<"jsx">>,{pkg,<<"jsx">>,<<"2.8.0">>},0},

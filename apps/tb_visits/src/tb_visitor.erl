@@ -14,13 +14,16 @@
   <<"meeting_id">>
 ]).
 
--define(VALUES, [
+-define(INT_VALUES, [
   <<"question_id">>, 
   <<"document_id">>, 
-  <<"time_spent">>,
   <<"field_user_id">>,
   <<"field_account_id">>,
   <<"user_id">>
+]).
+
+-define(FLOAT_VALUES, [
+  <<"time_spent">>
 ]).
 
 %% API Function Exports
@@ -105,5 +108,6 @@ prepare_msg(Measurement, Msg) ->
       NewMap
     end,
   Tags = lists:foldl(AddKey, #{}, ?TAGS),
-  Values = lists:foldl(AddKey, #{}, ?VALUES),
-  NewMsg#{tags => Tags, fields => Values}.
+  IntValues = lists:foldl(AddKey, #{}, ?INT_VALUES),
+  FloatValues = maps:map(fun(_, Value) -> float(Value) end, lists:foldl(AddKey, #{}, ?FLOAT_VALUES)),
+  NewMsg#{tags => Tags, fields => maps:merge(IntValues, FloatValues)}.
