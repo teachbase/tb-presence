@@ -11,15 +11,15 @@
   <<"course_id">>,
   <<"account_id">>,
   <<"material_id">>, 
-  <<"meeting_id">>
+  <<"meeting_id">>,
+  <<"user_id">>
 ]).
 
 -define(INT_VALUES, [
   <<"question_id">>, 
   <<"document_id">>, 
   <<"field_user_id">>,
-  <<"field_account_id">>,
-  <<"user_id">>
+  <<"field_account_id">>
 ]).
 
 -define(FLOAT_VALUES, [
