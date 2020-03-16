@@ -6,18 +6,19 @@
 -define(SERVER, ?MODULE).
 
 -define(TAGS, [
-  <<"quiz_id">>, 
-  <<"course_session_id">>, 
+  <<"quiz_id">>,
+  <<"course_session_id">>,
   <<"course_id">>,
   <<"account_id">>,
-  <<"material_id">>, 
+  <<"material_id">>,
   <<"meeting_id">>,
-  <<"user_id">>
+  <<"user_id">>,
+  <<"studying">>
 ]).
 
 -define(INT_VALUES, [
-  <<"question_id">>, 
-  <<"document_id">>, 
+  <<"question_id">>,
+  <<"document_id">>,
   <<"field_user_id">>,
   <<"field_account_id">>
 ]).
